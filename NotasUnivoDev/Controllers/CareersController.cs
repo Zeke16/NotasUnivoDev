@@ -17,7 +17,7 @@ namespace NotasUnivoDev.Controllers
         public IActionResult Index()
         {
             //Eager loading
-            List<CareersModel> list = DbContext.Careers.Include(x=> x.Faculty).ToList();
+            List<CareersModel> list = DbContext.Careers.Include(x => x.Faculty).ToList();
             return View(list);
         }
         [HttpGet]
@@ -82,6 +82,21 @@ namespace NotasUnivoDev.Controllers
             career.IsActive = !career.IsActive;
             DbContext.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult View(int id)
+        {
+            CareersModel career = DbContext.Careers.FirstOrDefault(row => row.CareerId == id) ?? new();
+            if (career is null)
+            {
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                career.Faculty = DbContext.Faculties.FirstOrDefault(x => career.FacultyId == x.FacultyId);
+                return View(career);
+            }
         }
     }
 }

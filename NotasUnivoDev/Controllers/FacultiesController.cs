@@ -24,7 +24,7 @@ namespace NotasUnivoDev.Controllers
             FacultiesModel model = new();
             if (id > 0)
             {
-               model = DbContext.Faculties.FirstOrDefault(x => x.FacultyId == id) ?? new();
+                model = DbContext.Faculties.FirstOrDefault(x => x.FacultyId == id) ?? new();
             }
 
             return View(model);
@@ -62,6 +62,14 @@ namespace NotasUnivoDev.Controllers
             faculty.IsActive = !faculty.IsActive;
             DbContext.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public IActionResult View(int id)
+        {
+            FacultiesModel model = DbContext.Faculties.FirstOrDefault(x => x.FacultyId == id) ?? new();
+            model.Careers = DbContext.Careers.Where(x => x.FacultyId == id).ToList();
+            return View(model);
         }
     }
 }
